@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Darkness King — Neon Store V2</title>
+<meta name="description" content="Darkness King — Neon book experience. Front-end demo with admin panel and contact."/>
+<style>
+:root{
+  --bg-dark: #041021;
+  --panel: #072033;
+  --neon: #00f0ff;
+  --neon-2: #6dfcff;
+  --muted: #9bb7d1;
+  --glass: rgba(255,255,255,0.03);
+  --accent: linear-gradient(90deg,var(--neon),var(--neon-2));
+}
+*{box-sizing:border-box;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+html,body{height:100%;margin:0;background:linear-gradient(180deg,#00121a,#041827);color:#e9fbff}
+.container{max-width:1180px;margin:0 auto;padding:18px}
+.header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,#021826,#003249);display:grid;place-items:center;font-weight:900;color:var(--neon);font-size:20px;box-shadow:0 0 18px rgba(0,240,255,0.12)}
+.title{font-weight:800}
+.controls{display:flex;gap:8px;align-items:center}
+.search{padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;min-width:220px}
+.icon-btn{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+.toggle{padding:8px 10px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+.btn-primary{padding:10px 14px;border-radius:10px;border:none;background:var(--accent);color:#012;font-weight:800;cursor:pointer;box-shadow:0 10px 30px rgba(0,150,200,0.06)}
+.landing{height:86vh;display:grid;place-items:center;text-align:center;padding:20px}
+.landing h1{font-size:40px;color:var(--neon);text-shadow:0 0 18px rgba(0,240,255,0.12);animation:glow 2s ease-in-out infinite alternate}
+@keyframes glow{from{text-shadow:0 0 8px #00f0ff}to{text-shadow:0 0 30px #00f0ff,0 0 40px #6dfcff}}
+.landing p{color:#bfeffb;margin-top:12px;font-size:18px}
+.read-now{margin-top:18px;padding:14px 28px;border-radius:30px;font-size:18px;border:2px solid var(--neon);background:transparent;color:var(--neon);cursor:pointer;box-shadow:0 0 18px rgba(0,240,255,0.08);transition:all .25s}
+.read-now:hover{background:var(--neon);color:#012;box-shadow:0 0 40px var(--neon)}
+.main{display:none;padding-top:18px;animation:fade .45s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:8px}
+.library-head{display:flex;align-items:center;gap:12px}
+.stats-mini{color:var(--muted)}
+.sections{display:grid;gap:26px;margin-top:18px}
+.section{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.6)}
+.section h3{color:var(--neon);margin:0 0 8px}
+.section .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.featured{display:flex;gap:12px;align-items:flex-start}
+.featured .card{flex:0 0 220px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-top:12px}
+.card{background:var(--panel);border-radius:10px;padding:8px;display:flex;flex-direction:column;align-items:center;transition:transform .25s,box-shadow .25s}
+.card:hover{transform:translateY(-6px);box-shadow:0 18px 50px rgba(0,0,0,0.6)}
+.cover{width:100%;height:190px;border-radius:8px;background-size:cover;background-position:center;margin-bottom:8px}
+.title-book{font-size:13px;font-weight:800;text-align:center}
+.author{font-size:12px;color:var(--muted);margin-top:6px}
+.card button{margin-top:8px;padding:8px 10px;border-radius:8px;border:none;background:var(--accent);cursor:pointer;font-weight:800}
+.show-more{display:inline-block;margin-top:12px;padding:8px 12px;border-radius:10px;border:none;background:transparent;color:var(--neon);cursor:pointer}
+.footer{margin-top:28px;padding:18px;text-align:center;color:var(--muted);border-top:1px solid rgba(255,255,255,0.02)}
+.social-placeholder{opacity:0.6}
+.hidden{display:none!important}
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:9999}
+.modal .box{background:linear-gradient(180deg,#071827,#051423);padding:18px;border-radius:12px;max-width:860px;width:96%;color:#e9fbff}
+.form-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.input,textarea,select{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit;width:100%}
+textarea{min-height:100px;resize:vertical}
+.admin-badge{background:#001a2b;color:var(--neon);padding:6px 10px;border-radius:10px;font-weight:800;border:1px solid rgba(0,240,255,0.06)}
+@media(max-width:900px){.cover{height:140px}.featured{flex-direction:column}.card{padding:6px}}
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="header">
+    <div class="brand">
+      <div class="logo">DK</div>
+      <div>
+        <div class="title">Darkness King</div>
+        <div class="small">Neon Book Experience</div>
+      </div>
+    </div>
+    <div class="controls">
+      <input id="search" class="search" placeholder="Search books or authors..." aria-label="search">
+      <div class="toggle" id="langBtn" title="Toggle Language">EN</div>
+      <div class="toggle" id="themeBtn" title="Toggle Theme">Dark</div>
+      <div class="icon-btn" id="contactBtn" title="Send Message">✉️</div>
+      <div class="icon-btn" id="loginBtn" title="Admin Login">🔒</div>
+    </div>
+  </header>
+
+  <section class="landing" id="landing">
+    <div class="panel">
+      <h1 id="heroTitle">Step into the light of knowledge</h1>
+      <p id="heroSub">Discover. Learn. Evolve. In the realm of neon wisdom.</p>
+      <button class="read-now" id="readNowBtn">READ NOW</button>
+      <div style="margin-top:14px;color:var(--muted)">Because great minds read bright — mobile-ready & fast.</div>
+    </div>
+  </section>
+
+  <main class="main" id="main">
+    <div class="topbar">
+      <div class="library-head"><h2 style="margin:0">Library</h2><div style="width:12px"></div><div class="stats-mini">Visitors: <span id="visCount">0</span> · Opens: <span id="openCount">0</span></div></div>
+      <div class="controls" style="gap:10px">
+        <button class="btn-primary" id="addBookBtn">Add Book</button>
+      </div>
+    </div>
+
+    <div class="sections" id="sections"></div>
+
+    <footer class="footer">
+      <div>© <span id="year"></span> Darkness King — Neon Store</div>
+      <div class="small" style="margin-top:8px">Socials placeholders: <span class="social-placeholder">Facebook</span> · <span class="social-placeholder">Instagram</span> · <span class="social-placeholder">TikTok</span> · <span class="social-placeholder">WhatsApp</span></div>
+    </footer>
+  </main>
+</div>
+
+<!-- modal -->
+<div class="modal" id="modal"><div class="box" id="modalBox"></div></div>
+
+<audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9f84e5027e.mp3?filename=click.mp3"></audio>
+
+<script>
+/* ======= Initial data generation: 100 books across 10 categories ======= */
+const ownerEmail = 'moromo3032007@gmail.com';
+const categories = [
+  'Programming & Tech','Self-Development','AI & Data','Business & Finance','Science & Space',
+  'Literature & Classics','Art & Design','History & Culture','Psychology & Philosophy','Productivity'
+];
+// generate 100 sample books with varied real-ish titles (mix real and generic)
+const seedTitles = [
+  'Clean Code','The Pragmatic Programmer','You Don\'t Know JS','Eloquent JavaScript','Design Patterns',
+  'Atomic Habits','The Power of Habit','Deep Work','Mindset','The Subtle Art of Not Giving a F*ck',
+  'Sapiens','A Brief History of Time','The Selfish Gene','The Origin of Species','Cosmos',
+  'Pride and Prejudice','1984','Crime and Punishment','The Odyssey','Don Quixote',
+  'Steal Like an Artist','The Design of Everyday Things','The Elements of Typographic Style','Interaction Design','Hooked',
+  'Good to Great','Lean Startup','Zero to One','Measure What Matters','Start with Why',
+  'Thinking, Fast and Slow','Man\'s Search for Meaning','Flow','Grit','The Power of Now'
+];
+const BOOKS = [];
+let idx = 1;
+for(let c=0;c<categories.length;c++){
+  for(let j=0;j<10;j++){
+    const title = seedTitles[(c*10 + j) % seedTitles.length] + (Math.random()>0.6?` (Edition ${Math.ceil(Math.random()*3)})`:'');
+    const author = ["Robert C. Martin","James Clear","Yuval Noah Harari","Carl Sagan","Jane Austen","George Orwell","Fyodor Dostoevsky","Sun Tzu","Simon Sinek","Carol Dweck"][Math.floor(Math.random()*10)];
+    BOOKS.push({
+      id:'bk_'+idx,
+      title: title,
+      author: author,
+      category: categories[c],
+      cover: `https://covers.openlibrary.org/b/olid/${(100000+idx)}-L.jpg` , // may not exist for all but gives realistic URL
+      pdf: '#'
+    });
+    idx++;
+  }
+}
+
+/* ======= State and persistence ======= */
+let visits = JSON.parse(localStorage.getItem('dk_visits')||'[]');
+let opens = JSON.parse(localStorage.getItem('dk_opens')||'[]');
+let contacts = JSON.parse(localStorage.getItem('dk_contacts')||'[]');
+let admin = localStorage.getItem('dk_admin')==='1';
+const clickSound = document.getElementById('clickSound');
+function playClick(){ try{ clickSound.currentTime=0; clickSound.play().catch(()=>{});}catch(e){} }
+
+/* ======= Utilities ======= */
+function $(sel){ return document.querySelector(sel); }
+function showModal(html){ $('#modalBox').innerHTML = html; $('#modal').style.display = 'flex'; }
+function closeModal(){ $('#modal').style.display = 'none'; $('#modalBox').innerHTML=''; }
+
+/* ======= Landing behavior ======= */
+$('#readNowBtn').addEventListener('click', ()=>{ playClick(); $('#landing').style.display='none'; $('#main').style.display='block'; recordVisit(); renderSections(); });
+
+/* ======= Render sections with featured + grid + show more ======= */
+function renderSections(){
+  const container = $('#sections'); container.innerHTML='';
+  const grouped = {};
+  BOOKS.forEach(b=>{ grouped[b.category] = grouped[b.category] || []; grouped[b.category].push(b); });
+  Object.keys(grouped).forEach(cat=>{
+    const books = grouped[cat];
+    const sec = document.createElement('section'); sec.className='section';
+    const h = document.createElement('h3'); h.textContent = cat;
+    sec.appendChild(h);
+    const featured = books[0];
+    const featuredDiv = document.createElement('div'); featuredDiv.className='featured';
+    const fcard = document.createElement('div'); fcard.className='card';
+    fcard.innerHTML = `<div class="cover" style="background-image:url('${featured.cover}')"></div><div class="title-book">${featured.title}</div><div class="author">${featured.author}</div><button onclick="openBook('${featured.id}')">Read</button>`;
+    featuredDiv.appendChild(fcard);
+    sec.appendChild(featuredDiv);
+    const grid = document.createElement('div'); grid.className='grid'; grid.id = 'grid_'+cat.replace(/\s+/g,'_');
+    books.slice(1,6).forEach(b=> grid.appendChild(createCard(b)));
+    sec.appendChild(grid);
+    if(books.length > 6){
+      const btn = document.createElement('button'); btn.className='show-more'; btn.textContent='Show more';
+      btn.addEventListener('click', ()=>{ expandCategory(cat, grid, books); btn.remove(); playClick(); });
+      sec.appendChild(btn);
+    }
+    container.appendChild(sec);
+  });
+  updateStatsUI();
+}
+
+function createCard(b){
+  const el = document.createElement('div'); el.className='card';
+  el.innerHTML = `<div class="cover" style="background-image:url('${b.cover}')"></div><div class="title-book">${b.title}</div><div class="author">${b.author}</div><button onclick="openBook('${b.id}')">Read</button>`;
+  return el;
+}
+
+function expandCategory(cat, gridEl, books){
+  const existing = gridEl.querySelectorAll('.card').length;
+  const next = books.slice(6, books.length); // append remaining
+  next.forEach(b=> gridEl.appendChild(createCard(b)));
+}
+
+/* ======= Open book (modal) and tracking ======= */
+function openBook(id){
+  playClick();
+  const book = BOOKS.find(x=>x.id===id);
+  if(!book) return;
+  opens.push({id, time:Date.now()});
+  localStorage.setItem('dk_opens', JSON.stringify(opens));
+  updateStatsUI();
+  const html = `<h3 style="color:var(--neon)">${book.title}</h3><p class="small">Author: ${book.author}</p>
+  <div style="margin-top:10px"><img src="${book.cover}" style="width:140px;height:200px;object-fit:cover;border-radius:8px;float:left;margin-right:12px"/></div>
+  <p style="clear:both;margin-top:12px">PDF not linked. You can add a PDF link from the Admin panel.</p>
+  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><button class="btn-primary" onclick="closeModal()">Close</button></div>`;
+  showModal(html);
+}
+
+/* ======= Search (live) ======= */
+$('#search').addEventListener('input', (e)=>{
+  const q = e.target.value.toLowerCase().trim();
+  if(!q){ renderSections(); return; }
+  const results = BOOKS.filter(b => (b.title + ' ' + b.author + ' ' + b.category).toLowerCase().includes(q));
+  const container = $('#sections'); container.innerHTML = '';
+  const s = document.createElement('section'); s.className='section';
+  s.innerHTML = `<h3>Search results for "${q}" (${results.length})</h3><div class="grid" id="searchGrid"></div>`;
+  container.appendChild(s);
+  const grid = $('#searchGrid');
+  results.forEach(r => grid.appendChild(createCard(r)));
+});
+
+/* ======= Visits tracking ======= */
+function recordVisit(){
+  visits = JSON.parse(localStorage.getItem('dk_visits')||'[]');
+  visits.push({id:'v_'+Math.random().toString(36).slice(2,8), time:Date.now(), ua:navigator.userAgent});
+  localStorage.setItem('dk_visits', JSON.stringify(visits));
+  updateStatsUI();
+}
+function updateStatsUI(){
+  $('#visCount').textContent = (JSON.parse(localStorage.getItem('dk_visits')||'[]')).length;
+  $('#openCount').textContent = (JSON.parse(localStorage.getItem('dk_opens')||'[]')).length;
+}
+
+/* ======= Contact / Send Message (mailto + save locally) ======= */
+$('#contactBtn').addEventListener('click', ()=>{
+  playClick();
+  showModal(`<h3 style="color:var(--neon)">Send Message</h3>
+  <p class="small">Your message will be saved locally and your mail client will open to send to the owner.</p>
+  <div class="form-row"><input id="cname" class="input" placeholder="Your name (optional)"></div>
+  <div style="margin-top:8px"><textarea id="cmsg" class="input" placeholder="Your message"></textarea></div>
+  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><button class="btn-primary" onclick="submitContact()">Send</button><button class="toggle" onclick="closeModal()">Cancel</button></div>`);
+});
+
+function submitContact(){
+  const name = (document.getElementById('cname').value||'').trim();
+  const msg = (document.getElementById('cmsg').value||'').trim();
+  if(!msg){ alert('Please write a message'); return; }
+  contacts = JSON.parse(localStorage.getItem('dk_contacts')||'[]');
+  contacts.unshift({name,msg,time:Date.now()});
+  localStorage.setItem('dk_contacts', JSON.stringify(contacts));
+  // mailto fallback
+  const subject = encodeURIComponent('Message from Darkness King');
+  const body = encodeURIComponent(`Name: ${name}\n\nMessage:\n${msg}\n\n--\nSent from Darkness King`);
+  window.location.href = `mailto:${ownerEmail}?subject=${subject}&body=${body}`;
+  alert('Message saved locally and opening your email client to send to owner.');
+  closeModal();
+}
+
+/* ======= Admin login & panel ======= */
+$('#loginBtn').addEventListener('click', ()=>{ adminPrompt(); });
+function adminPrompt(){
+  const pass = prompt('Enter admin password:');
+  if(pass=== 'mm12345mm'){ admin = true; localStorage.setItem('dk_admin','1'); renderAdminBadge(); showAdminPanel(); playClick(); }
+  else alert('Wrong password');
+}
+function renderAdminBadge(){
+  if(admin && !document.querySelector('.admin-badge')){ const b = document.createElement('div'); b.className='admin-badge'; b.textContent='Owner'; document.querySelector('.brand').appendChild(b); }
+}
+function showAdminPanel(){
+  if(!admin) return alert('Admin only');
+  const visitsList = JSON.parse(localStorage.getItem('dk_visits')||'[]');
+  const opensList = JSON.parse(localStorage.getItem('dk_opens')||'[]');
+  const contactsList = JSON.parse(localStorage.getItem('dk_contacts')||'[]');
+  const html = `<h3 style="color:var(--neon)">Admin Panel</h3>
+  <div class="kv">Visits: ${visitsList.length} · Opens: ${opensList.length} · Contacts: ${contactsList.length}</div>
+  <div style="margin-top:12px"><button class="btn-primary" onclick="exportData()">Export data</button> <button class="toggle" onclick="closeModal()">Close</button></div>
+  <hr/>
+  <h4 style="margin-top:10px">Manage Books</h4>
+  <div class="form-row"><input id="ab_title" class="input" placeholder="Title"><input id="ab_author" class="input" placeholder="Author"></div>
+  <div class="form-row" style="margin-top:8px"><input id="ab_cover" class="input" placeholder="Cover URL"><input id="ab_category" class="input" placeholder="Category"></div>
+  <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end"><button class="btn-primary" onclick="addBook()">Add Book</button><button class="toggle" onclick="closeModal()">Cancel</button></div>
+  <hr/>
+  <h4>Contacts (latest 20)</h4>
+  <div id="adminContacts" class="small"></div>
+  <h4 style="margin-top:10px">Manage existing (by ID)</h4>
+  <div class="form-row"><input id="del_id" class="input" placeholder="Book ID to delete"><button class="btn-primary" onclick="deleteBook()">Delete</button></div>
+  `;
+  showModal(html);
+  setTimeout(()=>{ const el = document.getElementById('adminContacts'); const list = JSON.parse(localStorage.getItem('dk_contacts')||'[]'); el.innerHTML = list.slice(0,20).map(m=>`<div style="border-bottom:1px dashed rgba(255,255,255,0.03);padding:6px 0"><strong>${m.name||'Anon'}</strong> · ${new Date(m.time).toLocaleString()}<div class="small">${m.msg}</div></div>`).join(''); },120);
+}
+
+function exportData(){
+  const data = {visits:JSON.parse(localStorage.getItem('dk_visits')||'[]'), opens:JSON.parse(localStorage.getItem('dk_opens')||'[]'), contacts:JSON.parse(localStorage.getItem('dk_contacts')||'[]'), books:BOOKS};
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='darknessking_export.json'; a.click(); URL.revokeObjectURL(url);
+}
+
+function addBook(){
+  const title = (document.getElementById('ab_title').value||'').trim();
+  const author = (document.getElementById('ab_author').value||'').trim();
+  const cover = (document.getElementById('ab_cover').value||'').trim() || `https://picsum.photos/400/600?random=${Math.floor(Math.random()*1000)}`;
+  const category = (document.getElementById('ab_category').value||'').trim() || categories[0];
+  if(!title || !author) return alert('Enter title and author');
+  const id = 'bk_'+(BOOKS.length+1)+'_'+Math.random().toString(36).slice(2,6);
+  const b = {id,title,author,category,cover,pdf:'#'};
+  BOOKS.unshift(b);
+  closeModal();
+  renderSections();
+  alert('Book added (local only).');
+}
+
+function deleteBook(){
+  const id = (document.getElementById('del_id').value||'').trim();
+  if(!id) return alert('Enter ID to delete');
+  const idx = BOOKS.findIndex(x=>x.id===id);
+  if(idx===-1) return alert('Book not found');
+  BOOKS.splice(idx,1);
+  closeModal();
+  renderSections();
+  alert('Book removed (local only).');
+}
+
+/* ======= Theme & Language toggles ======= */
+$('#themeBtn').addEventListener('click', ()=>{ playClick(); const cur = localStorage.getItem('dk_theme')||'dark'; setTheme(cur==='dark'?'light':'dark'); });
+function setTheme(t){ if(t==='dark'){ document.body.style.background='linear-gradient(180deg,#00121a,#041827)'; $('#themeBtn').textContent='Dark'; } else { document.body.style.background='linear-gradient(180deg,#f6fbff,#eaf6fb)'; $('#themeBtn').textContent='Light'; } localStorage.setItem('dk_theme',t); }
+$('#langBtn').addEventListener('click', ()=>{ playClick(); const cur = localStorage.getItem('dk_lang')||'en'; setLang(cur==='en'?'ar':'en'); });
+function setLang(l){
+  localStorage.setItem('dk_lang',l);
+  if(l==='ar'){ document.getElementById('heroTitle').textContent='مرحبا بعالم الحكمة'; document.getElementById('heroSub').textContent='اكتشف، تعلم، وتطور في عالم النيون'; document.getElementById('readNowBtn').textContent='اقرأ الآن'; $('#langBtn').textContent='AR'; }
+  else { document.getElementById('heroTitle').textContent='Step into the light of knowledge'; document.getElementById('heroSub').textContent='Discover. Learn. Evolve. In the realm of neon wisdom.'; document.getElementById('readNowBtn').textContent='READ NOW'; $('#langBtn').textContent='EN'; }
+}
+
+/* ======= Init ======= */
+document.getElementById('year').textContent = new Date().getFullYear();
+setTheme(localStorage.getItem('dk_theme')||'dark');
+setLang(localStorage.getItem('dk_lang')||'en');
+if(localStorage.getItem('dk_admin')==='1'){ admin = true; renderAdminBadge(); }
+
+/* ======= Keyboard admin quick (press A) ======= */
+document.addEventListener('keydown',(e)=>{ if(e.key==='A' || e.key==='a'){ adminPrompt(); } });
+
+</script>
+</body>
+</html>
