@@ -281,28 +281,77 @@ function adminPrompt(){
 function renderAdminBadge(){
   if(admin && !document.querySelector('.admin-badge')){ const b = document.createElement('div'); b.className='admin-badge'; b.textContent='Owner'; document.querySelector('.brand').appendChild(b); }
 }
-function showAdminPanel(){
-  if(!admin) return alert('Admin only');
-  const visitsList = JSON.parse(localStorage.getItem('dk_visits')||'[]');
-  const opensList = JSON.parse(localStorage.getItem('dk_opens')||'[]');
-  const contactsList = JSON.parse(localStorage.getItem('dk_contacts')||'[]');
-  const html = `<h3 style="color:var(--neon)">Admin Panel</h3>
-  <div class="kv">Visits: ${visitsList.length} · Opens: ${opensList.length} · Contacts: ${contactsList.length}</div>
-  <div style="margin-top:12px"><button class="btn-primary" onclick="exportData()">Export data</button> <button class="toggle" onclick="closeModal()">Close</button></div>
-  <hr/>
-  <h4 style="margin-top:10px">Manage Books</h4>
-  <div class="form-row"><input id="ab_title" class="input" placeholder="Title"><input id="ab_author" class="input" placeholder="Author"></div>
-  <div class="form-row" style="margin-top:8px"><input id="ab_cover" class="input" placeholder="Cover URL"><input id="ab_category" class="input" placeholder="Category"></div>
-  <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end"><button class="btn-primary" onclick="addBook()">Add Book</button><button class="toggle" onclick="closeModal()">Cancel</button></div>
-  <hr/>
-  <h4>Contacts (latest 20)</h4>
-  <div id="adminContacts" class="small"></div>
-  <h4 style="margin-top:10px">Manage existing (by ID)</h4>
-  <div class="form-row"><input id="del_id" class="input" placeholder="Book ID to delete"><button class="btn-primary" onclick="deleteBook()">Delete</button></div>
+function showAdminPanel() {
+  if (!admin) return alert('Admin only');
+  const visitsList = JSON.parse(localStorage.getItem('dk_visits') || '[]');
+  const opensList = JSON.parse(localStorage.getItem('dk_opens') || '[]');
+  const contactsList = JSON.parse(localStorage.getItem('dk_contacts') || '[]');
+
+  const html = `
+    <div style="max-height:70vh;overflow-y:auto;padding-right:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3 style="color:var(--neon)">Admin Panel</h3>
+        <button class="toggle" onclick="closeModal()">✖ Close</button>
+      </div>
+      <div class="kv">Visits: ${visitsList.length} · Opens: ${opensList.length} · Contacts: ${contactsList.length}</div>
+      <div style="margin-top:12px">
+        <button class="btn-primary" onclick="exportData()">Export data</button>
+      </div>
+      <hr/>
+      <h4 style="margin-top:10px">Manage Books</h4>
+      <div class="form-row">
+        <input id="ab_title" class="input" placeholder="Title">
+        <input id="ab_author" class="input" placeholder="Author">
+      </div>
+      <div class="form-row" style="margin-top:8px">
+        <input id="ab_cover" class="input" placeholder="Cover URL">
+        <input id="ab_category" class="input" placeholder="Category">
+      </div>
+      <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn-primary" onclick="addBook()">Add Book</button>
+        <button class="toggle" onclick="closeModal()">Cancel</button>
+      </div>
+      <hr/>
+      <h4>Contacts (latest 20)</h4>
+      <div id="adminContacts" class="small"></div>
+      <h4 style="margin-top:10px">Manage existing (by ID)</h4>
+      <div class="form-row">
+        <input id="del_id" class="input" placeholder="Book ID to delete">
+        <button class="btn-primary" onclick="deleteBook()">Delete</button>
+      </div>
+    </div>
   `;
   showModal(html);
-  setTimeout(()=>{ const el = document.getElementById('adminContacts'); const list = JSON.parse(localStorage.getItem('dk_contacts')||'[]'); el.innerHTML = list.slice(0,20).map(m=>`<div style="border-bottom:1px dashed rgba(255,255,255,0.03);padding:6px 0"><strong>${m.name||'Anon'}</strong> · ${new Date(m.time).toLocaleString()}<div class="small">${m.msg}</div></div>`).join(''); },120);
+
+  setTimeout(() => {
+    const el = document.getElementById('adminContacts');
+    const list = JSON.parse(localStorage.getItem('dk_contacts') || '[]');
+    el.innerHTML = list
+      .slice(0, 20)
+      .map(
+        (m) =>
+          `<div style="border-bottom:1px dashed rgba(255,255,255,0.1);padding:6px 0">
+            <strong>${m.name || 'Anon'}</strong> · ${new Date(m.time).toLocaleString()}
+            <div class="small">${m.msg}</div>
+          </div>`
+      )
+      .join('');
+  }, 120);
 }
+
+/* ======= إضافة فواصل بين الكتب ======= */
+const style = document.createElement("style");
+style.textContent = `
+  .grid .card {
+    border: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 10px;
+  }
+  .cover {
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 0 12px rgba(0,240,255,0.1);
+  }
+`;
+document.head.appendChild(style);
 
 function exportData(){
   const data = {visits:JSON.parse(localStorage.getItem('dk_visits')||'[]'), opens:JSON.parse(localStorage.getItem('dk_opens')||'[]'), contacts:JSON.parse(localStorage.getItem('dk_contacts')||'[]'), books:BOOKS};
