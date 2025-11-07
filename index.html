@@ -56,7 +56,10 @@ html,body{height:100%;margin:0;background:linear-gradient(180deg,#00121a,#041827
 .social-placeholder{opacity:0.6}
 .hidden{display:none!important}
 .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:9999}
-.modal .box{background:linear-gradient(180deg,#071827,#051423);padding:18px;border-radius:12px;max-width:860px;width:96%;color:#e9fbff}
+.modal .box{background:linear-gradient(180deg,#071827,#051423);padding:18px;border-radius:12px;max-width:860px;width:96%;color:#e9fbff;
+  max-height: 80vh; /* يخليها لا تتعدى 80% من ارتفاع الشاشة */
+  overflow-y: auto; /* يخلي التمرير يشتغل */
+}
 .form-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .input,textarea,select{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit;width:100%}
 textarea{min-height:100px;resize:vertical}
